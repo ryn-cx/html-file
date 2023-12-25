@@ -18,7 +18,7 @@ class HTMLFile(PavedPath):
 
         Args:
         ----
-            _args: Arguments to pass to the parent class's __init__ method.
+            _args: The path fragments to join together.
         """
         self.parsed_cached_value = None
         super().__init__()
