@@ -33,7 +33,7 @@ class HTMLFile(PavedPath):
         self.cache = HTMLCache()
 
     def write(self, content: StrictSoup | str | bytes, *, write_through: bool = True) -> None:
-        """Write the data to the file.
+        """Open the file, write to it, close the file, and clear the cache.
 
         Args:
         ----
