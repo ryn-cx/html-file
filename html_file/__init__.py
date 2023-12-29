@@ -10,11 +10,9 @@ if TYPE_CHECKING:
     from paved_path import PathableType
 
 
+# This is set up as a seperate class to make it easier to clear the cache.
 class HTMLCache(CobblestoneCache):
-    """Cache for JSONFile.
-
-    This is set up as a seperate class to make it easier to clear the cache.
-    """
+    """Cache for HTMLFile."""
 
     def __init__(self) -> None:
         """Initialize the cache with None values."""
@@ -40,42 +38,44 @@ class HTMLFile(PavedPath):
         Args:
         ----
             content: The object to be written to the file.
-            write_through: Whether to write through the cache.
+            write_through: If True the cache will be updated to match what is written to the file. If False the cache
+            will be cleared. Either way the cache is not allowed to be out of sync with the file, either it matches the
+            file or it is None.
         """
         # Strings and bytes are not serialized because no changescan be made on them.
         if isinstance(content, (str, bytes)):
             super().write(content, write_through=write_through)
-            if write_through:
-                self.cache.parsed = None
-        # All other objects are serialized using json
+        # All other objects are serialized using bs4
         else:
             super().write(str(content), write_through=write_through)
             if write_through:
                 self.cache.parsed = content
 
     def parsed(self) -> StrictSoup:
-        """Parse the file bytes using BeautifulSoup.
+        """Read the file bytes and parse the file using BeautifulSoup.
 
         Returns
         -------
             An uncached StrictSoup object.
         """
+        # I don't know of any reason why you would want to use read_text instead of read_bytes for BeautifulSoup. Unless
+        # a specific need arises this function will always use read_bytes.
         return StrictSoup(self.read_bytes(), "lxml")
 
     def parsed_cached(self, *, reload: bool = False) -> StrictSoup:
-        """Parse the file bytes using StrictSoup and cache the result.
+        """Read the file bytes, parse the file using BeautifulSoup, and cache the result.
 
         Args:
         ----
-            reload: Whether to reload the file bytes and reparse the file.
+            reload: If true read the bytes from the file, parse it using StrictSoup and cache the result even if a
+            StrictSoup object is already cached. If False use the cached StrictSoup object if it exists otherwise read
+            the bytes from the file, parse it using StrictSoup and cache the result.
 
         Returns:
         -------
-            A cached parsed StrictSoup object.
+            A cached StrictSoup object.
         """
-        # I don't know of any reason why you would want to use read_text instead of read_bytes for BeautifulSoup. Unless
-        # a specific need arises this function will always just use read_bytes
         if not self.cache.parsed or reload:
-            self.cache.parsed = StrictSoup(self.read_bytes_cached(reload=reload), "lxml")
+            self.cache.parsed = self.parsed()
 
         return self.cache.parsed
