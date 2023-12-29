@@ -21,22 +21,24 @@ class TestHTMLFile:
 
     def test_write(self, temporary_file: HTMLFile) -> None:
         """Test the write method."""
-        soup = StrictSoup("<title>Example</title>")
+        output = StrictSoup("<title>Example</title>")
         # Test empty cache without write_through
-        temporary_file.write(soup, write_through=False)
+        temporary_file.write(output, write_through=False)
         assert temporary_file.cache.parsed is None
 
         # Test empty cache with write_through
-        temporary_file.write(soup)
-        assert temporary_file.cache.parsed == soup
+        temporary_file.write(output)
+        assert temporary_file.cache.parsed == output
 
-        # Test non-empty cache without write_through
-        temporary_file.write(soup, write_through=False)
-        assert temporary_file.cache.parsed is None
+        output = StrictSoup("<title>Example 2</title>")
 
         # Test non-empty cache with write_through
-        temporary_file.write(soup)
-        assert temporary_file.cache.parsed == soup
+        temporary_file.write(output)
+        assert temporary_file.cache.parsed == output
+
+        # Test non-empty cache without write_through
+        temporary_file.write(output, write_through=False)
+        assert temporary_file.cache.parsed is None
 
     def test_parse(self, temporary_file: HTMLFile) -> None:
         """Test the parse method."""
