@@ -7,6 +7,8 @@ from paved_path import CobblestoneCache, PavedPath
 from strict_soup import StrictSoup
 
 if TYPE_CHECKING:
+    from typing import Self
+
     from paved_path import PathableType
 
 
@@ -23,14 +25,10 @@ class HTMLCache(CobblestoneCache):
 class HTMLFile(PavedPath):
     """Library for working with HTML files."""
 
-    def __init__(self, *_args: PathableType) -> None:
-        """Initialize the HTMLFile class.
-
-        Args:
-        ----
-            _args: The path fragments to join together.
-        """
-        self.cache = HTMLCache()
+    def __new__(cls, *args: PathableType) -> Self:
+        """Convert all arguments to Path objects and passes them to the Path constructor."""
+        cls.cache = HTMLCache()
+        return super().__new__(cls, *args)
 
     def write(self, content: StrictSoup | str | bytes, *, write_through: bool = True) -> None:
         """Open the file, write to it, close the file, and clear the cache.
