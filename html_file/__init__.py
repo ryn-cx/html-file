@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from paved_path import CobblestoneCache, PavedPath
 from strict_soup import StrictSoup
+from typing_extensions import override
 
 if TYPE_CHECKING:
     from typing import Self
@@ -16,8 +17,8 @@ if TYPE_CHECKING:
 class HTMLCache(CobblestoneCache):
     """Cache for HTMLFile."""
 
+    @override
     def __init__(self) -> None:
-        """Initialize the cache with None values."""
         self.parsed: StrictSoup | None = None
         super().__init__()
 
@@ -25,21 +26,13 @@ class HTMLCache(CobblestoneCache):
 class HTMLFile(PavedPath):
     """Library for working with HTML files."""
 
+    @override
     def __new__(cls, *args: PathableType) -> Self:
-        """Convert all arguments to Path objects and passes them to the Path constructor."""
         cls.cache = HTMLCache()
         return super().__new__(cls, *args)
 
+    @override
     def write(self, content: StrictSoup | str | bytes, *, write_through: bool = True) -> None:
-        """Open the file, write to it, close the file, and clear the cache.
-
-        Args:
-        ----
-            content: The object to be written to the file.
-            write_through: If True the cache will be updated to match what is written to the file. If False the cache
-            will be cleared. Either way the cache is not allowed to be out of sync with the file, either it matches the
-            file or it is None.
-        """
         # Strings and bytes are not serialized because no changescan be made on them.
         if isinstance(content, (str, bytes)):
             super().write(content, write_through=write_through)
