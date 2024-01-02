@@ -1,16 +1,9 @@
 """Library for working with HTML files."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from paved_path import CobblestoneCache, PavedPath
 from strict_soup import StrictSoup
 from typing_extensions import override
-
-if TYPE_CHECKING:
-    from typing import Self
-
-    from paved_path import PathableType
 
 
 # This is set up as a seperate class to make it easier to clear the cache.
@@ -26,10 +19,7 @@ class HTMLCache(CobblestoneCache):
 class HTMLFile(PavedPath):
     """Library for working with HTML files."""
 
-    @override
-    def __new__(cls, *args: PathableType) -> Self:
-        cls.cache = HTMLCache()
-        return super().__new__(cls, *args)
+    cache = HTMLCache()
 
     @override
     def write(self, content: StrictSoup | str | bytes, *, write_through: bool = True) -> None:
