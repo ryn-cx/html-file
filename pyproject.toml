@@ -3,12 +3,12 @@ name = "html-file"
 version = "0.1.0"
 description = "Library for working with HTML files."
 authors = [
-    {name = "ryn-cx", email = "84663588+ryn-cx@users.noreply.github.com"},
+    { name = "ryn-cx", email = "84663588+ryn-cx@users.noreply.github.com" },
 ]
 dependencies = []
 requires-python = "==3.12.*"
 readme = "README.md"
-license = {text = "AGPL-3.0-or-later"}
+license = { text = "AGPL-3.0-or-later" }
 
 
 [tool.pdm]
@@ -23,6 +23,7 @@ dev = [
     "pylint-pytest>=1.1.8",
     "pytest-cov>=5.0.0",
 ]
+
 # Configure ruff
 [tool.ruff.lint]
 select = ["ALL"]
